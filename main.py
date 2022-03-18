@@ -1,22 +1,16 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
-import requests
+from lib.news import News
 
-import lxml
-import django
-import djangorestframework
+# import djangorestframework
 
-
-
-def get_page():
-    request = requests.get('https://news.ycombinator.com/')
-    return request.text
-
+URL = 'https://news.ycombinator.com/'
 
 if __name__ == '__main__':
-    html = get_page()
+    news = News(URL)
+    html = news.get_page()
     soup = BeautifulSoup(html, 'lxml')
-    news = []
+    posts = []
 
     refs = soup.find_all('a', href=True)
     # td = soup.find_all('td', class_='title')
@@ -31,7 +25,11 @@ if __name__ == '__main__':
                     "url": ref.attrs.get('href'),
                     'created': datetime.now()
                 }
-                news.append(new_one)
+                posts.append(new_one)
                 count += 1
 
-    print(news)
+    result = news.save_to_db(posts)
+    read_result = news.read_db()
+
+
+    print(posts)
