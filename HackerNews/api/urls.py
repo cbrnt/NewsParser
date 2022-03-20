@@ -1,10 +1,11 @@
-from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
-from . import views
+from rest_framework import routers
+from .views import NewsViewSet
+from django.urls import path, include
+
+router = routers.DefaultRouter()
+router.register(r'posts', NewsViewSet)
 
 urlpatterns = [
-    path('posts/', views.NewsList.as_view()),
-    path('posts/<int:pk>/', views.NewsDetail.as_view()),
+    path('', include(router.urls)),
+    path('posts/', include('rest_framework.urls', namespace='rest_framework')),
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)

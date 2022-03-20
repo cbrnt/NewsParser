@@ -1,13 +1,14 @@
+import os
+
 from bs4 import BeautifulSoup
 from datetime import datetime
 from lib.news import News
 
-# import djangorestframework
-
-URL = 'https://news.ycombinator.com/'
+URL = os.environ['URL']
+DB_PATH = os.environ['DB_PATH']
 
 if __name__ == '__main__':
-    news = News(URL)
+    news = News(URL, DB_PATH)
     html = news.get_page()
     soup = BeautifulSoup(html, 'lxml')
     posts = []
@@ -28,8 +29,7 @@ if __name__ == '__main__':
                 posts.append(new_one)
                 count += 1
 
-    result = news.save_to_db(posts)
+    result = news.save_posts(posts)
     read_result = news.read_db()
 
-
-    print(posts)
+    print('READ', '\n', read_result)
